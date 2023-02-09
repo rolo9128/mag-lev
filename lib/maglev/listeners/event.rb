@@ -3,7 +3,7 @@ module MagLev
     attr_reader :name, :source, :args, :listened, :targets, :spies_only, :errors
     attr_accessor :parent
 
-    def initialize(name, source, *args)
+    def initialize(name, source, *args, **kwargs)
       Guard.nil('name', name)
       @name = name
       @source = source

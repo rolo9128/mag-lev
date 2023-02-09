@@ -30,9 +30,9 @@ module MagLev
             __memoized.fetch(name) { __memoized[name] = unbound.bind(self).call }
           end
         else
-          define_method(name) do |*args|
+          define_method(name) do |*args, **kwargs|
             store = __memoized[name] ||= {}
-            store.fetch(args) { store[args] = unbound.bind(self).call(*args) }
+            store.fetch(args, **kwargs) { store[args] = unbound.bind(self).call(*args, **kwargs) }
           end
         end
         name

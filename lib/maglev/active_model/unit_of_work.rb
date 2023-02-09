@@ -21,7 +21,7 @@ module MagLev
         # save is somewhat supported by checking if the record is valid and only adding it to the
         # transaction if it is. Otherwise it just returns false but does not fail the transaction,
         # since it is expected that the false result is to be used to handle things manually
-        def save(*args)
+        def save(*args, **kwargs)
           if valid?
             UnitOfWork.add(self) { super }
             true
@@ -30,7 +30,7 @@ module MagLev
           end
         end
 
-        def save!(*args)
+        def save!(*args, **kwargs)
           UnitOfWork.add(self) { super }
         end
 

@@ -8,7 +8,7 @@ module MagLev
   end
 
   class StdOutLogger
-    def method_missing(method, *args, &block)
+    def method_missing(method, *args, **kwargs, &block)
       if block_given?
         puts block.call
       else

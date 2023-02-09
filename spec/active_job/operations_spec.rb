@@ -5,7 +5,7 @@ class OperationsExampleJob < MagLev::ActiveJob::Base
   cattr_accessor :processed
   cattr_accessor :priority
 
-  def perform(*args)
+  def perform(*args, **kwargs)
     OperationsExampleJob.stuff ||= 0
     OperationsExampleJob.processed ||= 0
     MagLev.operations_queue.push(1, 'example') do

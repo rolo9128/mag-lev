@@ -34,27 +34,27 @@ module MagLev
       end
 
       [:debug, :info, :warn, :error, :fatal].each do |level|
-        define_method level do |*args, &block|
-          log(level, *args, &block)
+        define_method level do |*args, **kwargs, &block|
+          log(level, *args, **kwargs, &block)
         end
       end
 
       if defined?(Rails) and Rails.respond_to?(:logger)
-        def log(level, *args, &block)
+        def log(level, *args, **kwargs, &block)
           if block_given?
             Rails.logger.send level do
               format(block.call)
             end
           else
-            Rails.logger.send level, format(*args)
+            Rails.logger.send level, format(*args, **kwargs)
           end
         end
       else
-        def log(method, *args, &block)
+        def log(method, *args, **kwargs, &block)
           if block_given?
             puts format(block.call)
           else
-            puts format(*args)
+            puts format(*args, **kwargs)
           end
         end
       end
@@ -65,23 +65,23 @@ module MagLev
         end
       end
 
-      def format(msg, *args)
+      def format(msg, *args, **kwargs)
         msg = "#{@instance.class.name} #{id}#{@instance.logger_name}: #{msg}"
-        [msg, *args].map(&:to_s).join(' | ')
+        [msg, *args, **kwargs].map(&:to_s).join(' | ')
       end
 
-      def report(type, *args)
+      def report(type, *args, **kwargs)
         begin
           args = args.compact
           if respond_to?(type)
-            send(type, *args)
+            send(type, *args, **kwargs)
           end
 
           hash = args.find {|a| a.is_a? Hash}
           args << hash = {} unless hash
           hash[:logger_name] = @instance.logger_name
           # hash[@instance.to_s] = @instance # causes stack too deep errors in some cases
-          EventReporter.send(type, *args)
+          EventReporter.send(type, *args, **kwargs)
         rescue => ex
           MagLev.logger.warn("Failed to report error:")
           MagLev.logger.error(ex)

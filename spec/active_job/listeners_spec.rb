@@ -5,7 +5,7 @@ class ListenerJob < MagLev::ActiveJob::Base
 
   cattr_accessor :count
 
-  def perform(*args)
+  def perform(*args, **kwargs)
     ListenerJob.count = MagLev.broadcaster.listener_instances.count
   end
 end

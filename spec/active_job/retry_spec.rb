@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class RetryJob < MagLev::ActiveJob::Base
-  def perform(*args)
+  def perform(*args, **kwargs)
     self.class.tries += 1
     raise "Fail, you must"
   end

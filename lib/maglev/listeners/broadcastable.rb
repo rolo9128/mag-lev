@@ -1,7 +1,7 @@
 module MagLev
   module Broadcastable
-    def broadcast(event_name, *args)
-      event = MagLev::Event.new(event_name, self, *args)
+    def broadcast(event_name, *args, **kwargs)
+      event = MagLev::Event.new(event_name, self, *args, **kwargs)
       if MagLev.config.listeners.broadcast_mode == :specified
         BroadcastProxy.new(event, self.class.name)
       else

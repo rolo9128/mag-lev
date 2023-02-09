@@ -1,26 +1,26 @@
 module MagLev
   # integrates 3rd party error/event reporting libraries into a unified service
   class EventReporter
-    def self.info(*args)
-      log(:info, *args)
+    def self.info(*args, **kwargs)
+      log(:info, *args, **kwargs)
     end
 
-    def self.warn(*args)
-      log(:warn, *args)
+    def self.warn(*args, **kwargs)
+      log(:warn, *args, **kwargs)
     end
 
-    def self.error(*args)
-      log(:error, *args)
+    def self.error(*args, **kwargs)
+      log(:error, *args, **kwargs)
     end
 
-    def self.fatal(*args)
-      log(:fatal, *args)
+    def self.fatal(*args, **kwargs)
+      log(:fatal, *args, **kwargs)
     end
 
-    def self.log(level, *args)
+    def self.log(level, *args, **kwargs)
       if Rails.respond_to?(:env) and not Rails.env.test?
-        ::Rollbar.send(level == :fatal ? :critical : level, *args) if defined?(::Rollbar)
-        log_raven(level, *args) if defined?(Raven)
+        ::Rollbar.send(level == :fatal ? :critical : level, *args, **kwargs) if defined?(::Rollbar)
+        log_raven(level, *args, **kwargs) if defined?(Raven)
       end
     end
 
@@ -52,7 +52,7 @@ module MagLev
       end
     end
 
-    def self.log_raven(level, *args)
+    def self.log_raven(level, *args, **kwargs)
       str = args.find {|a| a.is_a?(String) }
       ex = args.find {|a| a.is_a?(Exception) }
       hash = args.find {|a| a.is_a?(Hash) } || {}
